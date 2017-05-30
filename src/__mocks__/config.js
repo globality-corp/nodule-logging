@@ -3,7 +3,7 @@ export default {
         environment: 'dev',
         enabled: true,
         subdomain: 'my-subdomain',
-        tagName: 'styx',
+        tagName: 'my-app-name',
         token: 'my-loggly-token',
     },
     name: 'ma-app-name',
