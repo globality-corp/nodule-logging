@@ -16,6 +16,6 @@ describe('create a new logger and transports', () => {
     it('should return a new loggly transport', () => {
         const consoleLoggly = transportLoggly(config);
         expect(consoleLoggly.level).toBe('info');
-        expect(consoleLoggly.client.token).toEqual('abcdefghijklmopqrstuvwxyz');
+        expect(consoleLoggly.client.token).toEqual('my-loggly-token');
     });
 });

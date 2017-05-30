@@ -1,20 +1,15 @@
 export default {
-    name: 'styx',
-    ignoreRouteUrls: [
-        '/api/health',
-        '/healthcheck',
-    ],
-    console: {
-        colorize: false,
-    },
-    level: 'info',
     loggly: {
-        tagName: 'styx',
-        enabled: true,
-        subdomain: 'globality-test',
-        token: 'abcdefghijklmopqrstuvwxyz',
         environment: 'dev',
+        enabled: true,
+        subdomain: 'my-subdomain',
+        tagName: 'styx',
+        token: 'my-loggly-token',
     },
+    name: 'ma-app-name',
+    level: 'info',
+    ignoreRouteUrls: ['/api/health', '/healthcheck'],
+    console: { colorize: false },
     morgan: {
         format: {
             length: ':res[content-length]',
@@ -27,11 +22,6 @@ export default {
             url: ':url',
         },
     },
-    includeReqHeaders: false,
-    omitReqProperties: [
-        'authorization',
-        'oldPassword',
-        'newPassword',
-        'password',
-    ],
+    includeReqHeaders: true,
+    omitReqProperties: ['authorization', 'oldPassword', 'newPassword', 'password'],
 };
