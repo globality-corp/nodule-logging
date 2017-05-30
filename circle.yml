@@ -1,7 +1,7 @@
 machine:
   # This makes use of a cache for reuse between builds
   environment:
-    PATH: "${PATH}:${HOME}/jest-coverage-validator/node_modules/.bin"
+    PATH: "${PATH}:${HOME}/nodule-logging/node_modules/.bin"
   pre:
     - mkdir ~/.yarn-cache
   node:
