@@ -1,6 +1,6 @@
 {
     "name": "nodule-logging",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Opinionated logging for Node projects",
     "main": "dist/index.js",
     "repository": "https://github.com/globality-corp/nodule-logging",
@@ -10,9 +10,13 @@
         "test": "jest src",
         "prepublish": "npm run build"
     },
-    "author": "Jason Morita",
+    "author": {
+        "name": "Globality Engineering",
+        "email": "engineering@globality.com"
+    },
     "license": "MIT",
     "dependencies": {
+        "is-uuid": "^1.0.2",
         "jest-cli": "^20.0.3",
         "lodash": "^4.17.4",
         "morgan": "^1.7.0",
