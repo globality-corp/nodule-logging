@@ -99,10 +99,10 @@ function addStream(logger, config) {
 @defaults(loggingDefaults)
 class Logger {
     constructor(graph) {
-        const config = graph.config.logger;
-        const baseLogger = createLogger(config);
+        this.config = graph.config.logger;
+        const baseLogger = createLogger(this.config);
         this.baseLogger = baseLogger;
-        this.requestRules = config.requestRules;
+        this.requestRules = this.config.requestRules;
 
         // define custom tokens
         morgan.token('operation-hash', req => get(req, 'body.extensions.persistentQuery.sha256Hash'));
@@ -111,17 +111,19 @@ class Logger {
         morgan.token('message', req => req.name || '-');
         morgan.token('request-id', req => req.id);
         morgan.token('request-headers', (req) => {
-            const headers = config.includeReqHeaders === true
-                ? omit(req.headers, config.omitReqProperties) : {};
+            const headers = this.config.includeReqHeaders === true
+                ? omit(req.headers, this.config.omitReqProperties) : {};
             return JSON.stringify(headers);
         });
+    }
 
-        const format = json(config.morgan.format);
+    makeMiddleware() {
+        const format = json(this.config.morgan.format);
         const options = {
-            stream: addStream(this.baseLogger, config),
-            skip: skip(config),
+            stream: addStream(this.baseLogger, this.config),
+            skip: skip(this.config),
         };
-        graph.app.use(morgan(format, options));
+        return morgan(format, options);
     }
 
     debug(req, message, args, autoLog = true) {
