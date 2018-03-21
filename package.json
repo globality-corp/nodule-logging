@@ -1,6 +1,6 @@
 {
     "name": "nodule-logging",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Opinionated logging for Node projects",
     "main": "dist/index.js",
     "repository": "https://github.com/globality-corp/nodule-logging",
