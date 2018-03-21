@@ -20,17 +20,24 @@ import {
 } from './logFormatting';
 
 
-function transportLoggly(config) {
-    if (config.loggly.enabled === true) {
+function transportLoggly({
+    enabled,
+    token,
+    level,
+    subdomain,
+    tagName,
+    environment,
+}) {
+    if (enabled === true) {
         return new transports.Loggly({
             handleExceptions: true,
-            inputToken: config.loggly.token,
+            inputToken: token,
             json: true,
-            level: config.level,
-            subdomain: config.loggly.subdomain,
+            level: level,
+            subdomain: subdomain,
             tags: [
-                config.loggly.tagName,
-                config.loggly.environment,
+                tagName,
+                environment,
             ],
         });
     }
@@ -57,14 +64,22 @@ function sortObj(obj) {
 
 
 // singleton to create a logging instance based on config
-function createLogger(config) {
+function createLogger(metadata, config) {
     // winston logger with transports
+    console.log("metadata: ", metadata.name);
     const logger = new WinstonLogger({
         exitOnError: false,
         level: config.level,
         transports: [
             transportConsole(config),
-            transportLoggly(config),
+            transportLoggly({
+                enabled: config.loggly.enabled,
+                environment: config.loggly.environment,
+                subdomain: config.loggly.subdomain,
+                token: config.loggly.token,
+                tagName: metadata.name,
+                level: config.level,
+            }),
         ].filter(transport => transport), // remove loggly if falsey
     });
 
@@ -100,7 +115,7 @@ function addStream(logger, config) {
 class Logger {
     constructor(graph) {
         this.config = graph.config.logger;
-        const baseLogger = createLogger(this.config);
+        const baseLogger = createLogger(graph.metadata, this.config);
         this.baseLogger = baseLogger;
         this.requestRules = this.config.requestRules;
 
@@ -169,7 +184,6 @@ module.exports = {
     skip,
     omit,
     Logger,
-    createLogger: once(createLogger),
     transportConsole,
     transportLoggly,
 };
