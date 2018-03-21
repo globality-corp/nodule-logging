@@ -3,6 +3,7 @@ import get from 'lodash/get';
 import flatten from 'lodash/flatten';
 
 export function getElapsedTime(req) {
+    req.doSomeStuff.win()
     const diff = process.hrtime(req._startAt);  // eslint-disable-line no-underscore-dangle
     return (diff[0] * 1e3) + (diff[1] * 1e-6);
 }
