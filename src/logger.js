@@ -1,7 +1,7 @@
 import {
-        transports,
-        Logger as WinstonLogger,
-    } from 'winston';
+    transports,
+    Logger as WinstonLogger,
+} from 'winston';
 
 import 'winston-loggly'; // adds winston.transports.Loggly
 import morgan from 'morgan'; // eslint-disable-line import/no-extraneous-dependencies
