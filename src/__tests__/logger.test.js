@@ -1,5 +1,10 @@
 import config from '../__mocks__/config';
-import { transportConsole, transportLoggly, skip, omit } from '../logger';
+import {
+    transportConsole,
+    transportLoggly,
+    skip,
+    omit,
+} from '../logger';
 
 describe('create a new logger and transports', () => {
     it('should return a winston logger instance', () => {
@@ -15,7 +20,14 @@ describe('create a new logger and transports', () => {
     });
 
     it('should return a new loggly transport', () => {
-        const consoleLoggly = transportLoggly(config);
+        const consoleLoggly = transportLoggly({
+            enabled: true,
+            token: 'my-loggly-token',
+            level: 'info',
+            subdomain: 'subdomain',
+            tagName: 'service-name',
+            environment: 'env',
+        });
         expect(consoleLoggly.level).toBe('info');
         expect(consoleLoggly.client.token).toEqual('my-loggly-token');
     });

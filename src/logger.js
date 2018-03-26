@@ -4,7 +4,6 @@ import {
     } from 'winston';
 
 import 'winston-loggly'; // adds winston.transports.Loggly
-import once from 'lodash/once';
 import morgan from 'morgan'; // eslint-disable-line import/no-extraneous-dependencies
 import json from 'morgan-json';
 import { binding, defaults } from 'nodule-config';
@@ -30,11 +29,11 @@ function transportLoggly({
 }) {
     if (enabled === true) {
         return new transports.Loggly({
+            subdomain,
+            level,
             handleExceptions: true,
             inputToken: token,
             json: true,
-            level: level,
-            subdomain: subdomain,
             tags: [
                 tagName,
                 environment,
@@ -66,7 +65,6 @@ function sortObj(obj) {
 // singleton to create a logging instance based on config
 function createLogger(metadata, config) {
     // winston logger with transports
-    console.log("metadata: ", metadata.name);
     const logger = new WinstonLogger({
         exitOnError: false,
         level: config.level,
