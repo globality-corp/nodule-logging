@@ -1,5 +1,7 @@
 import config from '../__mocks__/config';
 import {
+    addStream,
+    createLogger,
     transportConsole,
     transportLoggly,
     skip,
@@ -7,10 +9,9 @@ import {
 } from '../logger';
 
 describe('create a new logger and transports', () => {
-    it('should return a winston logger instance', () => {
-        // xxx good oprotunity to try writing more graph oriented tests
-        // const logger = createLogger(config);
-        // expect(logger.level).toBe('info');
+    it.skip('should return a winston logger instance', () => {
+        const logger = createLogger(config);
+        expect(logger.level).toBe('info');
     });
 
     it('should return a new console transport', () => {
@@ -44,10 +45,9 @@ describe('create a new logger and transports', () => {
         expect(redacted.authorization).toBe(undefined);
     });
 
-    it('should return a writable stream for morgan to write logs to', () => {
-        // xxx good oprotunity to try writing more graph oriented tests
-        // const logger = createLogger(config);
-        // const stream = addStream(logger, config);
-        // expect(typeof stream.write).toBe('function');
+    it.skip('should return a writable stream for morgan to write logs to', () => {
+        const logger = createLogger(config);
+        const stream = addStream(logger, config);
+        expect(typeof stream.write).toBe('function');
     });
 });
