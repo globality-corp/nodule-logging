@@ -1,5 +1,4 @@
-import createLogger from './logger';
-import logRequests from './middleware';
+import { Logger } from './logger';
 import {
     extractLoggingProperties,
     getCleanStackTrace,
@@ -8,8 +7,7 @@ import {
 } from './logFormatting';
 
 export {
-    createLogger,
-    logRequests,
+    Logger,
     extractLoggingProperties,
     getCleanStackTrace,
     getElapsedTime,
