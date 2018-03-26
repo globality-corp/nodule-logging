@@ -49,7 +49,7 @@ jobs:
 
       - run:
           name: Test
-          command: yarn test
+          command: yarn verify
 
       - persist_to_workspace:
           root: ~/repo

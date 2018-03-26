@@ -60,7 +60,7 @@ describe('calculateUserStatus', () => {
     it('should find the right function`s names', async () => {
         const stackTrace = a(req);
         expect(stackTrace[0][0]).toEqual('b');
-        expect(stackTrace[0][1]).toEqual('/logFormatting.js:3:63');
+        expect(stackTrace[0][1]).toEqual('/logFormatting.js:3:26');
         expect(stackTrace[1][0]).toEqual('a');
     });
 

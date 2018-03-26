@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import flatten from 'lodash/flatten';
 
 export function getElapsedTime(req) {
-    const diff = process.hrtime(req._startAt);  // eslint-disable-line no-underscore-dangle
+    const diff = process.hrtime(req._startAt); // eslint-disable-line no-underscore-dangle
     return (diff[0] * 1e3) + (diff[1] * 1e-6);
 }
 
@@ -20,8 +20,8 @@ export function getCleanStackTrace(req, parentLevel = 0) {
     const addresses = get(req, 'app.config.logging.stackTracePathFilter', []).join('|');
     return stackTrace
         .split('\n')
-        .slice(1)  // the 1st line is a header
-        .map(line => line.match(`at ([^ _]+?) .*?((${addresses}).*)\\)`))  // "at funcName (path/leif/src/a/b/c.js:24:16)"
+        .slice(1) // the 1st line is a header
+        .map(line => line.match(`at ([^ _]+?) .*?((${addresses}).*)\\)`)) // "at funcName (path/leif/src/a/b/c.js:24:16)"
         .filter(res => res !== null)
         .map(matches => matches.slice(1))
         .slice(1 + parentLevel); // we dont want to return getCleanStackTrace
@@ -79,7 +79,8 @@ function parseObject(obj, { name, path, subPaths, type, recursive = true, ...arg
     if (args.hideUUID) {
         property = typeof property === 'string' ? property.replace(
             RegExp('[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}', 'g'),
-            '{uuid}') : null;
+            '{uuid}',
+        ) : null;
     }
     return property === null ? [] : [{ [name]: property }];
 }
