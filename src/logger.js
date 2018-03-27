@@ -45,11 +45,11 @@ function transportLoggly({
 }
 
 
-function transportConsole(config) {
+function transportConsole(level) {
     return new transports.Console({
+        level,
         handleExceptions: true,
         json: true,
-        level: config.level,
     });
 }
 
@@ -65,19 +65,20 @@ function sortObj(obj) {
 // singleton to create a logging instance based on config
 function createLogger(container) {
     const { metadata, config } = container;
+    const { logger: loggingConfig } = config;
     // winston logger with transports
     const logger = new WinstonLogger({
         exitOnError: false,
-        level: config.level,
+        level: loggingConfig.level,
         transports: [
-            transportConsole(config),
+            transportConsole(loggingConfig.level),
             transportLoggly({
-                enabled: config.loggly.enabled,
-                environment: config.loggly.environment,
-                subdomain: config.loggly.subdomain,
-                token: config.loggly.token,
+                enabled: loggingConfig.loggly.enabled,
+                environment: loggingConfig.loggly.environment,
+                subdomain: loggingConfig.loggly.subdomain,
+                token: loggingConfig.loggly.token,
                 tagName: metadata.name,
-                level: config.level,
+                level: loggingConfig.level,
             }),
         ].filter(transport => transport), // remove loggly if falsey
     });
