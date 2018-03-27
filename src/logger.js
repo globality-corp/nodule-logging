@@ -6,7 +6,7 @@ import {
 import 'winston-loggly'; // adds winston.transports.Loggly
 import morgan from 'morgan'; // eslint-disable-line import/no-extraneous-dependencies
 import json from 'morgan-json';
-import { binding, defaults } from 'nodule-config';
+import { bind, setDefaults } from '@globality/nodule-config';
 import { get } from 'lodash';
 import omitBy from 'lodash/omitBy';
 
@@ -63,7 +63,8 @@ function sortObj(obj) {
 
 
 // singleton to create a logging instance based on config
-function createLogger(metadata, config) {
+function createLogger(container) {
+    const { metadata, config } = container;
     // winston logger with transports
     const logger = new WinstonLogger({
         exitOnError: false,
@@ -108,13 +109,10 @@ function addStream(logger, config) {
 }
 
 
-@binding('logger')
-@defaults(loggingDefaults)
 class Logger {
-    constructor(graph) {
-        this.config = graph.config.logger;
-        const baseLogger = createLogger(graph.metadata, this.config);
-        this.baseLogger = baseLogger;
+    constructor(container) {
+        this.config = container.config.logger;
+        this.baseLogger = createLogger(container);
         this.requestRules = this.config.requestRules;
 
         // define custom tokens
@@ -176,6 +174,10 @@ class Logger {
         return sortObj({ ...autoParameters, ...args, message });
     }
 }
+
+
+bind('logger', container => new Logger(container));
+setDefaults('logger', loggingDefaults);
 
 
 module.exports = {

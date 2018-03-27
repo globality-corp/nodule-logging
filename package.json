@@ -1,6 +1,6 @@
 {
-    "name": "nodule-logging",
-    "version": "0.2.0",
+    "name": "@globality/nodule-logging",
+    "version": "1.0.0",
     "description": "Opinionated logging for Node projects",
     "main": "lib",
     "repository": "https://github.com/globality-corp/nodule-logging",
@@ -20,7 +20,7 @@
         "lodash": "^4.17.4",
         "morgan": "^1.7.0",
         "morgan-json": "^1.1.0",
-        "nodule-config": "^1.0.9",
+        "@globality/nodule-config": "^2.0.0",
         "winston": "^2.3.0",
         "winston-loggly": "^1.3.1"
     },
