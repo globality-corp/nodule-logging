@@ -1,5 +1,5 @@
 {
-    "name": "nodule-logging",
+    "name": "@globality/nodule-logging",
     "version": "0.2.0",
     "description": "Opinionated logging for Node projects",
     "main": "lib",
