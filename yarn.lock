@@ -78,9 +78,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@globality/nodule-config@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@globality/nodule-config/-/nodule-config-2.0.2.tgz#521948f6b4d7e5c1c27ebc624a0c4dabae8c9a84"
+"@globality/nodule-config@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@globality/nodule-config/-/nodule-config-2.0.3.tgz#65af709e94721d99ab008bab12ae629443ccdd69"
   dependencies:
     bottlejs "^1.6.2"
     credstash "https://github.com/KensoDev/node-credstash.git#hotfix/credstash"
