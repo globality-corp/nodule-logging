@@ -15,7 +15,7 @@ describe('create a new logger and transports', () => {
     });
 
     it('should return a new console transport', () => {
-        const consoleTransport = transportConsole(config);
+        const consoleTransport = transportConsole(config.level);
         expect(consoleTransport.level).toBe('info');
         expect(consoleTransport.colorize).toBe(false);
     });
