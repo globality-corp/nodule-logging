@@ -78,11 +78,11 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@globality/nodule-config@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@globality/nodule-config/-/nodule-config-2.0.3.tgz#65af709e94721d99ab008bab12ae629443ccdd69"
+"@globality/nodule-config@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@globality/nodule-config/-/nodule-config-2.1.0.tgz#fca088220dd6d1e9c97f1e3c2a4a603d15ea712c"
   dependencies:
-    bottlejs "^1.6.2"
+    bottlejs "^1.7.0"
     credstash "https://github.com/KensoDev/node-credstash.git#hotfix/credstash"
     lodash "^4.17.5"
 
@@ -952,7 +952,7 @@ boom@5.x.x:
   dependencies:
     hoek "4.x.x"
 
-bottlejs@^1.6.2:
+bottlejs@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/bottlejs/-/bottlejs-1.7.0.tgz#6365d72c4f9c61f204797e944f1e7d4b23d90d3c"
 
@@ -1278,9 +1278,9 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-"credstash@https://github.com/KensoDev/node-credstash.git#hotfix/credstash":
+"credstash@git+https://github.com/KensoDev/node-credstash.git#hotfix/credstash":
   version "1.0.1"
-  resolved "https://github.com/KensoDev/node-credstash.git#750a137777e64dc798d4ac398f9d991840ca7289"
+  resolved "git+https://github.com/KensoDev/node-credstash.git#750a137777e64dc798d4ac398f9d991840ca7289"
   dependencies:
     aes-js "0.2.2"
     async "1.5.2"
