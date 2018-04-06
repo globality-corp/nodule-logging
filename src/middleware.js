@@ -56,6 +56,7 @@ export default function middleware(req, res, next) {
 }
 
 module.exports = {
+    omit,
     skip,
     middleware,
 };

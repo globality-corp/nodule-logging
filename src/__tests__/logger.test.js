@@ -5,7 +5,6 @@ import {
     createLogger,
     transportConsole,
     transportLoggly,
-    omit,
 } from '../logger';
 
 describe('create a new logger and transports', () => {
@@ -33,11 +32,6 @@ describe('create a new logger and transports', () => {
         expect(consoleLoggly.client.token).toEqual('my-loggly-token');
     });
 
-    it('should skip ignorable routes', () => {
-        const req = { authorization: 'xyz' };
-        const redacted = omit(req, config.omitReqProperties);
-        expect(redacted.authorization).toBe(undefined);
-    });
 
     it('should not fail if graph is not initialized', () => {
         clearBinding('logger');
