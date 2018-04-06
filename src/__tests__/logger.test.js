@@ -1,10 +1,10 @@
+import { clearBinding, getContainer } from '@globality/nodule-config';
 import config from '../__mocks__/config';
 import {
     addStream,
     createLogger,
     transportConsole,
     transportLoggly,
-    skip,
     omit,
 } from '../logger';
 
@@ -34,15 +34,16 @@ describe('create a new logger and transports', () => {
     });
 
     it('should skip ignorable routes', () => {
-        const ignore = skip(config);
-        const req = { originalUrl: '/healthcheck' };
-        expect(ignore(req)).toBe(true);
-    });
-
-    it('should skip ignorable routes', () => {
         const req = { authorization: 'xyz' };
         const redacted = omit(req, config.omitReqProperties);
         expect(redacted.authorization).toBe(undefined);
+    });
+
+    it('should not fail if graph is not initialized', () => {
+        clearBinding('logger');
+        const logger = getContainer('logger');
+        console.log('logger', logger);
+        logger.info('hello there');
     });
 
     it.skip('should return a writable stream for morgan to write logs to', () => {

@@ -45,23 +45,6 @@ function transportLoggly({
 }
 
 
-function transportConsole(level) {
-    return new transports.Console({
-        level,
-        handleExceptions: true,
-        json: true,
-    });
-}
-
-// ES6 uses the order we've inserted the strings
-// http://exploringjs.com/es6/ch_oop-besides-classes.html#_traversal-order-of-properties
-function sortObj(obj) {
-    return Object.keys(obj).sort()
-        .filter(key => obj[key] || obj[key] === 0)
-        .reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});
-}
-
-
 // singleton to create a logging instance based on config
 function createLogger(container) {
     const { metadata, config } = container;
@@ -86,29 +69,28 @@ function createLogger(container) {
     return logger;
 }
 
+
+function transportConsole(level) {
+    return new transports.Console({
+        level,
+        handleExceptions: true,
+        json: true,
+    });
+}
+
+
+// ES6 uses the order we've inserted the strings
+// http://exploringjs.com/es6/ch_oop-besides-classes.html#_traversal-order-of-properties
+function sortObj(obj) {
+    return Object.keys(obj).sort()
+        .filter(key => obj[key] || obj[key] === 0)
+        .reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});
+}
+
 // filter out named properties from req object
 function omit(req, blacklist) {
     return omitBy(req, (value, key) => blacklist.includes(key));
 }
-
-// exclude any health or other ignorable urls
-function skip(config) {
-    return function ignoreUrl(req) {
-        const url = req.originalUrl || req.url;
-        return config.ignoreRouteUrls.includes(url);
-    };
-}
-
-// where morgan connects to winston
-function addStream(logger, config) {
-    return {
-        write: (message) => {
-            const logEntry = JSON.parse(message);
-            return logger.log(config.level, logEntry.message, logEntry);
-        },
-    };
-}
-
 
 class Logger {
     constructor(container) {
@@ -127,15 +109,6 @@ class Logger {
                 ? omit(req.headers, this.config.omitReqProperties) : {};
             return JSON.stringify(headers);
         });
-    }
-
-    makeMiddleware() {
-        const format = json(this.config.morgan.format);
-        const options = {
-            stream: addStream(this.baseLogger, this.config),
-            skip: skip(this.config),
-        };
-        return morgan(format, options);
     }
 
     debug(req, message, args, autoLog = true) {
@@ -177,12 +150,7 @@ class Logger {
 }
 
 
-bind('logger', container => new Logger(container));
-setDefaults('logger', loggingDefaults);
-
-
 module.exports = {
-    skip,
     omit,
     Logger,
     transportConsole,
