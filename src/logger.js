@@ -2,15 +2,8 @@ import {
     transports,
     Logger as WinstonLogger,
 } from 'winston';
-
 import 'winston-loggly'; // adds winston.transports.Loggly
-import morgan from 'morgan'; // eslint-disable-line import/no-extraneous-dependencies
-import json from 'morgan-json';
-import { bind, setDefaults } from '@globality/nodule-config';
-import { get } from 'lodash';
-import omitBy from 'lodash/omitBy';
 
-import loggingDefaults from './defaults';
 import {
     extractLoggingProperties,
     getCleanStackTrace,
@@ -44,6 +37,13 @@ function transportLoggly({
     return false;
 }
 
+function transportConsole(level) {
+    return new transports.Console({
+        level,
+        handleExceptions: true,
+        json: true,
+    });
+}
 
 // singleton to create a logging instance based on config
 function createLogger(container) {
@@ -69,16 +69,6 @@ function createLogger(container) {
     return logger;
 }
 
-
-function transportConsole(level) {
-    return new transports.Console({
-        level,
-        handleExceptions: true,
-        json: true,
-    });
-}
-
-
 // ES6 uses the order we've inserted the strings
 // http://exploringjs.com/es6/ch_oop-besides-classes.html#_traversal-order-of-properties
 function sortObj(obj) {
@@ -87,28 +77,12 @@ function sortObj(obj) {
         .reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});
 }
 
-// filter out named properties from req object
-function omit(req, blacklist) {
-    return omitBy(req, (value, key) => blacklist.includes(key));
-}
 
 class Logger {
     constructor(container) {
         this.config = container.config.logger;
         this.baseLogger = createLogger(container);
         this.requestRules = this.config.requestRules;
-
-        // define custom tokens
-        morgan.token('operation-hash', req => get(req, 'body.extensions.persistentQuery.sha256Hash'));
-        morgan.token('operation-name', req => get(req, 'body.operationName'));
-        morgan.token('user-id', req => get(req, 'user.id'));
-        morgan.token('message', req => req.name || '-');
-        morgan.token('request-id', req => req.id);
-        morgan.token('request-headers', (req) => {
-            const headers = this.config.includeReqHeaders === true
-                ? omit(req.headers, this.config.omitReqProperties) : {};
-            return JSON.stringify(headers);
-        });
     }
 
     debug(req, message, args, autoLog = true) {
@@ -151,7 +125,6 @@ class Logger {
 
 
 module.exports = {
-    omit,
     Logger,
     transportConsole,
     transportLoggly,

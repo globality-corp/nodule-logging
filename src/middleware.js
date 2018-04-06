@@ -1,4 +1,8 @@
-import { getConfig, getContainer, getMetadata } from '@globality/nodule-config';
+import { getConfig, getContainer } from '@globality/nodule-config';
+import morgan from 'morgan'; // eslint-disable-line import/no-extraneous-dependencies
+import json from 'morgan-json';
+import { get } from 'lodash';
+import omitBy from 'lodash/omitBy';
 
 // where morgan connects to winston
 function addStream(logger, level) {
@@ -19,9 +23,26 @@ function skip(ignoreRouteUrls) {
     };
 }
 
+// filter out named properties from req object
+function omit(req, blacklist) {
+    return omitBy(req, (value, key) => blacklist.includes(key));
+}
+
 export default function middleware(req, res, next) {
+    const { level, ignoreRouteUrls, includeReqHeaders, omitReqProperties } = getConfig('logger');
     const { format } = getConfig('logger.morgan');
-    const { level, ignoreRouteUrls } = getConfig('logger');
+    // define custom tokens
+    morgan.token('operation-hash', request => get(request, 'body.extensions.persistentQuery.sha256Hash'));
+    morgan.token('operation-name', request => get(request, 'body.operationName'));
+    morgan.token('user-id', request => get(request, 'user.id'));
+    morgan.token('message', request => request.name || '-');
+    morgan.token('request-id', request => request.id);
+    morgan.token('request-headers', (request) => {
+        const headers = includeReqHeaders === true
+            ? omit(request.headers, omitReqProperties) : {};
+        return JSON.stringify(headers);
+    });
+
 
     const { baseLogger } = getContainer('logger');
 
@@ -37,4 +58,4 @@ export default function middleware(req, res, next) {
 module.exports = {
     skip,
     middleware,
-}
+};

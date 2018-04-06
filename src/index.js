@@ -1,3 +1,6 @@
+import { bind, setDefaults } from '@globality/nodule-config';
+
+import loggingDefaults from './defaults';
 import { Logger } from './logger';
 import { middleware } from './middleware';
 import {
