@@ -1,5 +1,5 @@
 import { getConfig, getContainer } from '@globality/nodule-config';
-import morgan from 'morgan'; // eslint-disable-line import/no-extraneous-dependencies
+import morgan from 'morgan';
 import json from 'morgan-json';
 import { get } from 'lodash';
 import omitBy from 'lodash/omitBy';
