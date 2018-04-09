@@ -47,22 +47,20 @@ function transportConsole(level) {
 }
 
 // singleton to create a logging instance based on config
-function createLogger(container) {
-    const { metadata, config } = container;
-    const { logger: loggingConfig } = config;
+function createLogger(name, level, logglyConfig) {
     // winston logger with transports
     const logger = new WinstonLogger({
         exitOnError: false,
-        level: loggingConfig.level,
+        level,
         transports: [
-            transportConsole(loggingConfig.level),
+            transportConsole(level),
             transportLoggly({
-                enabled: loggingConfig.loggly.enabled,
-                environment: loggingConfig.loggly.environment,
-                subdomain: loggingConfig.loggly.subdomain,
-                token: loggingConfig.loggly.token,
-                tagName: metadata.name,
-                level: loggingConfig.level,
+                enabled: logglyConfig.enabled,
+                environment: logglyConfig.environment,
+                subdomain: logglyConfig.subdomain,
+                token: logglyConfig.token,
+                tagName: name,
+                level,
             }),
         ].filter(transport => transport), // remove loggly if falsey
     });
@@ -82,7 +80,8 @@ function sortObj(obj) {
 class Logger {
     constructor(container) {
         this.config = container.config.logger;
-        this.baseLogger = createLogger(container);
+        const { name } = container.metadata;
+        this.baseLogger = createLogger(name, this.config.level, this.config.logger);
         this.requestRules = this.config.requestRules;
     }
 
@@ -124,25 +123,32 @@ class Logger {
     }
 }
 
-class NoopLogger {
-    debug() {} // eslint-disable-line class-methods-use-this
-    info() {} // eslint-disable-line class-methods-use-this
-    warning() {} // eslint-disable-line class-methods-use-this
-    error() {} // eslint-disable-line class-methods-use-this
-}
-
 function getLogger() {
     const { logger, metadata } = getContainer();
+    const defaultLogglyOptions = {
+        enabled: false,
+        environment: 'dev',
+        subdomain: 'loggly',
+        token: 'token',
+    };
 
     if (!logger && !metadata) {
-        return new NoopLogger();
+        return createLogger(
+            'testing-logger',
+            'info',
+            defaultLogglyOptions,
+        );
     }
 
     if (!logger && metadata.testing) {
-        return new NoopLogger();
+        return createLogger(
+            'testing-logger',
+            'info',
+            defaultLogglyOptions,
+        );
     }
 
-    return logger();
+    return logger;
 }
 
 
