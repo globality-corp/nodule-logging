@@ -3,6 +3,7 @@ import {
     Logger as WinstonLogger,
 } from 'winston';
 import 'winston-loggly'; // adds winston.transports.Loggly
+import { getContainer } from '@globality/nodule-config';
 
 import {
     extractLoggingProperties,
@@ -123,8 +124,30 @@ class Logger {
     }
 }
 
+class NoopLogger {
+    debug() {} // eslint-disable-line class-methods-use-this
+    info() {} // eslint-disable-line class-methods-use-this
+    warning() {} // eslint-disable-line class-methods-use-this
+    error() {} // eslint-disable-line class-methods-use-this
+}
+
+function getLogger() {
+    const { logger, metadata } = getContainer();
+
+    if (!logger && !metadata) {
+        return new NoopLogger();
+    }
+
+    if (!logger && metadata.testing) {
+        return new NoopLogger();
+    }
+
+    return logger();
+}
+
 
 module.exports = {
+    getLogger,
     Logger,
     transportConsole,
     transportLoggly,

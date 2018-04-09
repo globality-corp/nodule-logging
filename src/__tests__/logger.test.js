@@ -1,8 +1,9 @@
-import { clearBinding, getContainer } from '@globality/nodule-config';
+import { clearBinding } from '@globality/nodule-config';
 import config from '../__mocks__/config';
 import {
     addStream,
     createLogger,
+    getLogger,
     transportConsole,
     transportLoggly,
 } from '../logger';
@@ -35,8 +36,7 @@ describe('create a new logger and transports', () => {
 
     it('should not fail if graph is not initialized', () => {
         clearBinding('logger');
-        const logger = getContainer('logger');
-        console.log('logger', logger);
+        const logger = getLogger();
         logger.info('hello there');
     });
 
