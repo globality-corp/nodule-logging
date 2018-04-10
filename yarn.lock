@@ -1278,9 +1278,9 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-"credstash@git+https://github.com/KensoDev/node-credstash.git#hotfix/credstash":
+"credstash@https://github.com/KensoDev/node-credstash.git#hotfix/credstash":
   version "1.0.1"
-  resolved "git+https://github.com/KensoDev/node-credstash.git#750a137777e64dc798d4ac398f9d991840ca7289"
+  resolved "https://github.com/KensoDev/node-credstash.git#750a137777e64dc798d4ac398f9d991840ca7289"
   dependencies:
     aes-js "0.2.2"
     async "1.5.2"

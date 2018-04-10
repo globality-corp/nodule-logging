@@ -1,7 +1,7 @@
 import { bind, setDefaults } from '@globality/nodule-config';
 
 import loggingDefaults from './defaults';
-import { Logger } from './logger';
+import { getLogger, Logger } from './logger';
 import { middleware } from './middleware';
 import {
     extractLoggingProperties,
@@ -11,7 +11,7 @@ import {
 } from './logFormatting';
 
 
-bind('logger', container => new Logger(container));
+bind('logger', () => getLogger());
 setDefaults('logger', loggingDefaults);
 
 bind('middleware.logging', () => middleware);

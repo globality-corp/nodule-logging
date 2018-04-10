@@ -124,7 +124,7 @@ class Logger {
 }
 
 function getLogger() {
-    const { logger, metadata } = getContainer();
+    const { metadata, config } = getContainer();
     const defaultLogglyOptions = {
         enabled: false,
         environment: 'dev',
@@ -132,7 +132,7 @@ function getLogger() {
         token: 'token',
     };
 
-    if (!logger && !metadata) {
+    if (!config && !metadata) {
         return createLogger(
             'testing-logger',
             'info',
@@ -140,7 +140,7 @@ function getLogger() {
         );
     }
 
-    if (!logger && metadata.testing) {
+    if (metadata.testing) {
         return createLogger(
             'testing-logger',
             'info',
@@ -148,7 +148,8 @@ function getLogger() {
         );
     }
 
-    return logger;
+    const container = getContainer();
+    return new Logger(container);
 }
 
 
