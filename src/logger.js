@@ -2,15 +2,9 @@ import {
     transports,
     Logger as WinstonLogger,
 } from 'winston';
-
 import 'winston-loggly'; // adds winston.transports.Loggly
-import morgan from 'morgan'; // eslint-disable-line import/no-extraneous-dependencies
-import json from 'morgan-json';
-import { bind, setDefaults } from '@globality/nodule-config';
-import { get } from 'lodash';
-import omitBy from 'lodash/omitBy';
+import { getContainer } from '@globality/nodule-config';
 
-import loggingDefaults from './defaults';
 import {
     extractLoggingProperties,
     getCleanStackTrace,
@@ -44,13 +38,34 @@ function transportLoggly({
     return false;
 }
 
-
 function transportConsole(level) {
     return new transports.Console({
         level,
         handleExceptions: true,
         json: true,
     });
+}
+
+// singleton to create a logging instance based on config
+function createLogger(name, level, logglyConfig) {
+    // winston logger with transports
+    const logger = new WinstonLogger({
+        exitOnError: false,
+        level,
+        transports: [
+            transportConsole(level),
+            transportLoggly({
+                enabled: logglyConfig.enabled,
+                environment: logglyConfig.environment,
+                subdomain: logglyConfig.subdomain,
+                token: logglyConfig.token,
+                tagName: name,
+                level,
+            }),
+        ].filter(transport => transport), // remove loggly if falsey
+    });
+
+    return logger;
 }
 
 // ES6 uses the order we've inserted the strings
@@ -62,80 +77,12 @@ function sortObj(obj) {
 }
 
 
-// singleton to create a logging instance based on config
-function createLogger(container) {
-    const { metadata, config } = container;
-    const { logger: loggingConfig } = config;
-    // winston logger with transports
-    const logger = new WinstonLogger({
-        exitOnError: false,
-        level: loggingConfig.level,
-        transports: [
-            transportConsole(loggingConfig.level),
-            transportLoggly({
-                enabled: loggingConfig.loggly.enabled,
-                environment: loggingConfig.loggly.environment,
-                subdomain: loggingConfig.loggly.subdomain,
-                token: loggingConfig.loggly.token,
-                tagName: metadata.name,
-                level: loggingConfig.level,
-            }),
-        ].filter(transport => transport), // remove loggly if falsey
-    });
-
-    return logger;
-}
-
-// filter out named properties from req object
-function omit(req, blacklist) {
-    return omitBy(req, (value, key) => blacklist.includes(key));
-}
-
-// exclude any health or other ignorable urls
-function skip(config) {
-    return function ignoreUrl(req) {
-        const url = req.originalUrl || req.url;
-        return config.ignoreRouteUrls.includes(url);
-    };
-}
-
-// where morgan connects to winston
-function addStream(logger, config) {
-    return {
-        write: (message) => {
-            const logEntry = JSON.parse(message);
-            return logger.log(config.level, logEntry.message, logEntry);
-        },
-    };
-}
-
-
 class Logger {
     constructor(container) {
         this.config = container.config.logger;
-        this.baseLogger = createLogger(container);
+        const { name } = container.metadata;
+        this.baseLogger = createLogger(name, this.config.level, this.config.logger);
         this.requestRules = this.config.requestRules;
-
-        // define custom tokens
-        morgan.token('operation-hash', req => get(req, 'body.extensions.persistentQuery.sha256Hash'));
-        morgan.token('operation-name', req => get(req, 'body.operationName'));
-        morgan.token('user-id', req => get(req, 'user.id'));
-        morgan.token('message', req => req.name || '-');
-        morgan.token('request-id', req => req.id);
-        morgan.token('request-headers', (req) => {
-            const headers = this.config.includeReqHeaders === true
-                ? omit(req.headers, this.config.omitReqProperties) : {};
-            return JSON.stringify(headers);
-        });
-    }
-
-    makeMiddleware() {
-        const format = json(this.config.morgan.format);
-        const options = {
-            stream: addStream(this.baseLogger, this.config),
-            skip: skip(this.config),
-        };
-        return morgan(format, options);
     }
 
     debug(req, message, args, autoLog = true) {
@@ -176,14 +123,38 @@ class Logger {
     }
 }
 
+function getLogger() {
+    const { metadata, config } = getContainer();
+    const defaultLogglyOptions = {
+        enabled: false,
+        environment: 'dev',
+        subdomain: 'loggly',
+        token: 'token',
+    };
 
-bind('logger', container => new Logger(container));
-setDefaults('logger', loggingDefaults);
+    if (!config && !metadata) {
+        return createLogger(
+            'testing-logger',
+            'info',
+            defaultLogglyOptions,
+        );
+    }
+
+    if (metadata.testing) {
+        return createLogger(
+            'testing-logger',
+            'info',
+            defaultLogglyOptions,
+        );
+    }
+
+    const container = getContainer();
+    return new Logger(container);
+}
 
 
 module.exports = {
-    skip,
-    omit,
+    getLogger,
     Logger,
     transportConsole,
     transportLoggly,
