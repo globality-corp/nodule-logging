@@ -18,6 +18,7 @@ bind('middleware.logging', () => middleware);
 
 
 export {
+    getLogger,
     Logger,
     extractLoggingProperties,
     getCleanStackTrace,
