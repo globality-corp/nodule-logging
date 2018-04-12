@@ -81,7 +81,7 @@ class Logger {
     constructor(container) {
         this.config = container.config.logger;
         const { name } = container.metadata;
-        this.baseLogger = createLogger(name, this.config.level, this.config.logger);
+        this.baseLogger = createLogger(name, this.config.level, this.config.loggly);
         this.requestRules = this.config.requestRules;
     }
 
