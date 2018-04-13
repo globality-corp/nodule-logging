@@ -11,6 +11,7 @@ import {
     getElapsedTime,
     getParentFunction,
 } from './logFormatting';
+import loggingDefaults from './defaults';
 
 
 function transportLoggly({
@@ -81,7 +82,7 @@ class Logger {
     constructor(container) {
         this.config = container.config.logger;
         const { name } = container.metadata;
-        this.baseLogger = createLogger(name, this.config.level, this.config.logger);
+        this.baseLogger = createLogger(name, this.config.level, this.config.loggly);
         this.requestRules = this.config.requestRules;
     }
 
@@ -125,27 +126,21 @@ class Logger {
 
 function getLogger() {
     const { metadata, config } = getContainer();
-    const defaultLogglyOptions = {
-        enabled: false,
-        environment: 'dev',
-        subdomain: 'loggly',
-        token: 'token',
+    const defaults = {
+        metadata: {
+            name: 'testing',
+        },
+        config: {
+            logger: loggingDefaults,
+        },
     };
 
     if (!config && !metadata) {
-        return createLogger(
-            'testing-logger',
-            'info',
-            defaultLogglyOptions,
-        );
+        return new Logger(defaults);
     }
 
     if (metadata.testing) {
-        return createLogger(
-            'testing-logger',
-            'info',
-            defaultLogglyOptions,
-        );
+        return new Logger(defaults);
     }
 
     const container = getContainer();

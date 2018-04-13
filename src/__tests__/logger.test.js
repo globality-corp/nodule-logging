@@ -37,7 +37,7 @@ describe('create a new logger and transports', () => {
     it('should not fail if graph is not initialized', () => {
         clearBinding('logger');
         const logger = getLogger();
-        logger.info('hello there');
+        logger.info({}, 'hello there');
     });
 
     it.skip('should return a writable stream for morgan to write logs to', () => {
