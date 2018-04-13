@@ -4,6 +4,7 @@ import json from 'morgan-json';
 import { get } from 'lodash';
 import omitBy from 'lodash/omitBy';
 
+
 // where morgan connects to winston
 function addStream(logger, level) {
     return {
@@ -34,7 +35,7 @@ export default function middleware(req, res, next) {
     // define custom tokens
     morgan.token('operation-hash', request => get(request, 'body.extensions.persistentQuery.sha256Hash'));
     morgan.token('operation-name', request => get(request, 'body.operationName'));
-    morgan.token('user-id', request => get(request, 'user.id'));
+    morgan.token('user-id', request => get(request, 'locals.user.id'));
     morgan.token('message', request => request.name || '-');
     morgan.token('request-id', request => request.id);
     morgan.token('request-headers', (request) => {
