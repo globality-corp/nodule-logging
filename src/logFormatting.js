@@ -4,12 +4,11 @@ import flatten from 'lodash/flatten';
 
 export function getElapsedTime(req) {
     const startAt = get(req, '_startAt');
-    if (startAt) {
-        const diff = process.hrtime(startAt);
-        return (diff[0] * 1e3) + (diff[1] * 1e-6);
+    if (!startAt) {
+        return null;
     }
-
-    return null;
+    const diff = process.hrtime(startAt);
+    return (diff[0] * 1e3) + (diff[1] * 1e-6);
 }
 
 // Get an array of arrays: [[Function-Name, Function-Address]]
