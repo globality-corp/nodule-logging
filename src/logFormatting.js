@@ -3,7 +3,11 @@ import get from 'lodash/get';
 import flatten from 'lodash/flatten';
 
 export function getElapsedTime(req) {
-    const diff = process.hrtime(req._startAt); // eslint-disable-line no-underscore-dangle
+    const startAt = get(req, '_startAt');
+    if (!startAt) {
+        return null;
+    }
+    const diff = process.hrtime(startAt);
     return (diff[0] * 1e3) + (diff[1] * 1e-6);
 }
 

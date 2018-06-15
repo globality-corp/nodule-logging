@@ -1,4 +1,9 @@
-import { extractLoggingProperties, getCleanStackTrace, getParentFunction } from '../logFormatting';
+import {
+    extractLoggingProperties,
+    getCleanStackTrace,
+    getParentFunction,
+    getElapsedTime,
+} from '../logFormatting';
 
 function b(req) { return getCleanStackTrace(req); }
 function a(req) { return b(req); }
@@ -56,11 +61,11 @@ const rulesX = [
     { path: 'sub2', name: 'number', type: 'number', subPaths: ['qx'] },
 ];
 
-describe('calculateUserStatus', () => {
+describe('logFormatting', () => {
     it('should find the right function`s names', async () => {
         const stackTrace = a(req);
         expect(stackTrace[0][0]).toEqual('b');
-        expect(stackTrace[0][1]).toEqual('/logFormatting.js:3:26');
+        expect(stackTrace[0][1]).toEqual('/logFormatting.js:8:26');
         expect(stackTrace[1][0]).toEqual('a');
     });
 
@@ -89,5 +94,11 @@ describe('calculateUserStatus', () => {
         expect(params.subUuidWithNumberValue).toEqual(undefined);
         expect(params.reStringWithNoMatch).toEqual(undefined);
         expect(params.sub2number).toEqual(undefined);
+    });
+
+    it('should handle malformed requests', () => {
+        // mock req does not have _startAt
+        const elapsedTime = getElapsedTime(req);
+        expect(elapsedTime).toEqual(null);
     });
 });
