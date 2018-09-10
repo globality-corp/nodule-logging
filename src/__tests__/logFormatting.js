@@ -1,14 +1,12 @@
 import {
     extractLoggingProperties,
     getCleanStackTrace,
-    getParentFunction,
     getElapsedTime,
 } from '../logFormatting';
 
+
 function b(req) { return getCleanStackTrace(req); }
 function a(req) { return b(req); }
-function c(req) { return getParentFunction(req); }
-function d(req) { return c(req); }
 
 
 const uuidList = ['48df0785-dc66-408c-be85-718e5da94e10', 'b0a68c90-7f21-45e3-b694-323ec588de8c'];
@@ -67,11 +65,6 @@ describe('logFormatting', () => {
         expect(stackTrace[0][0]).toEqual('b');
         expect(stackTrace[0][1]).toEqual('/logFormatting.js:8:26');
         expect(stackTrace[1][0]).toEqual('a');
-    });
-
-    it('should find the right parent name', async () => {
-        const parent = d(req);
-        expect(parent.functionName).toEqual('d');
     });
 
     it('should find the right parameters', async () => {

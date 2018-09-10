@@ -1,7 +1,7 @@
 import { getConfig, getContainer } from '@globality/nodule-config';
 import morgan from 'morgan';
 import json from 'morgan-json';
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 import omitBy from 'lodash/omitBy';
 
 
@@ -24,11 +24,15 @@ function skip(ignoreRouteUrls) {
     };
 }
 
+
 // filter out named properties from req object
 function omit(req, blacklist) {
     return omitBy(req, (value, key) => blacklist.includes(key));
 }
 
+
+// Use morgan library to log every HTTP response
+// Also set req._startAt - that is used by the logger
 export default function middleware(req, res, next) {
     const { level, ignoreRouteUrls, includeReqHeaders, omitReqProperties } = getConfig('logger');
     const { format } = getConfig('logger.morgan');
@@ -36,6 +40,7 @@ export default function middleware(req, res, next) {
     morgan.token('operation-hash', request => get(request, 'body.extensions.persistentQuery.sha256Hash'));
     morgan.token('operation-name', request => get(request, 'body.operationName'));
     morgan.token('user-id', request => get(request, 'locals.user.id'));
+    morgan.token('company-id', request => get(request, 'locals.user.companyId'));
     morgan.token('message', request => request.name || '-');
     morgan.token('request-id', request => request.id);
     morgan.token('request-headers', (request) => {
@@ -44,10 +49,7 @@ export default function middleware(req, res, next) {
         return JSON.stringify(headers);
     });
 
-
     const { baseLogger } = getContainer('logger');
-
-
     const formatFormat = json(format);
     const options = {
         stream: addStream(baseLogger, level),
@@ -56,8 +58,18 @@ export default function middleware(req, res, next) {
     return morgan(formatFormat, options)(req, res, next);
 }
 
+
+// Set req._startAt - that is used by the logger
+// Should be used if logging.middleware (morgan based) is not set
+export function setRequestStartAtMiddleware(req, res, next) {
+    set(req, '_startAt', process.hrtime());
+    return next();
+}
+
+
 module.exports = {
-    omit,
-    skip,
     middleware,
+    omit,
+    setRequestStartAtMiddleware,
+    skip,
 };
