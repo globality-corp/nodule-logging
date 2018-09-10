@@ -9,7 +9,6 @@ import {
     extractLoggingProperties,
     getCleanStackTrace,
     getElapsedTime,
-    getParentFunction,
 } from './logFormatting';
 import loggingDefaults from './defaults';
 
@@ -116,8 +115,7 @@ class Logger {
 
     createLogParameters(req, message, args, autoLog) {
         const autoParameters = autoLog ? {
-            'elapsed-total-ms': getElapsedTime(req),
-            ...getParentFunction(req),
+            elapsedTotalMs: getElapsedTime(req),
             ...extractLoggingProperties(req, this.requestRules),
         } : {};
         return sortObj({ ...autoParameters, ...args, message });

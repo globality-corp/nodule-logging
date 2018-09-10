@@ -27,15 +27,6 @@ export function getCleanStackTrace(req, parentLevel = 0) {
         .slice(1 + parentLevel); // we dont want to return getCleanStackTrace
 }
 
-// Return an object of { functionName, functionAddress }
-// of the the function that called the function that called getParentFunction.
-// You can get info on other functions by changing the parentLevel parameter
-export function getParentFunction(req, parentLevel = 0) {
-    const realLevel = parentLevel + 2;
-    const [functionName, functionAddress] = get(getCleanStackTrace(req), `${realLevel}`, [null, null]);
-    return { functionName, functionAddress };
-}
-
 function isUuidList(property) {
     return property.every(anyNonNil);
 }
