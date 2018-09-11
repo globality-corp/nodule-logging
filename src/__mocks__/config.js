@@ -9,6 +9,7 @@ export default {
     level: 'info',
     ignoreRouteUrls: ['/api/health', '/healthcheck'],
     console: { colorize: false },
+    enableMorgan: true,
     morgan: {
         format: {
             length: ':res[content-length]',

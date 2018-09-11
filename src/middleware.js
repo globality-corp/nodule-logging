@@ -1,9 +1,11 @@
 import { getConfig, getContainer } from '@globality/nodule-config';
+import get from 'lodash/get';
+import omitBy from 'lodash/omitBy';
+import set from 'lodash/set';
 import morgan from 'morgan';
 import json from 'morgan-json';
-import { get, set } from 'lodash';
-import omitBy from 'lodash/omitBy';
-
+import onFinished from 'on-finished';
+import onHeaders from 'on-headers';
 
 // where morgan connects to winston
 function addStream(logger, level) {
@@ -31,9 +33,14 @@ function omit(req, blacklist) {
 }
 
 
+function recordStartTime(req) {
+    set(req, '_startAt', process.hrtime());
+}
+
+
 // Use morgan library to log every HTTP response
 // Also set req._startAt - that is used by the logger
-export default function middleware(req, res, next) {
+function morganMiddleware(req, res, next) {
     const { level, ignoreRouteUrls, includeReqHeaders, omitReqProperties } = getConfig('logger');
     const { format } = getConfig('logger.morgan');
     // define custom tokens
@@ -59,10 +66,36 @@ export default function middleware(req, res, next) {
 }
 
 
+function thinMiddleware(req, res, next) {
+    const { logger } = getContainer();
+    recordStartTime(req);
+
+    function logOnRequestStart () {
+        logger.info(req, 'OperationStarted', {});
+    }
+    function logOnRequestEnd () {
+        logger.info(req, 'OperationEnded', { statusCode: get(res, 'statusCode', 0) });
+    }
+    onHeaders(res, logOnRequestStart);
+    onFinished(res, logOnRequestEnd);
+    next();
+}
+
+
+export default function middleware(req, res, next) {
+    const { enableMorgan } = getConfig('logger');
+    if (enableMorgan) {
+        morganMiddleware(req, res, next);
+    } else {
+        thinMiddleware(req, res, next);
+    }
+}
+
+
 // Set req._startAt - that is used by the logger
 // Should be used if logging.middleware (morgan based) is not set
 export function setRequestStartAtMiddleware(req, res, next) {
-    set(req, '_startAt', process.hrtime());
+    recordStartTime(req);
     return next();
 }
 
