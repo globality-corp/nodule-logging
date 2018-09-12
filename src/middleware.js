@@ -5,7 +5,6 @@ import set from 'lodash/set';
 import morgan from 'morgan';
 import json from 'morgan-json';
 import onFinished from 'on-finished';
-import onHeaders from 'on-headers';
 
 // where morgan connects to winston
 function addStream(logger, level) {
@@ -70,13 +69,9 @@ function thinMiddleware(req, res, next) {
     const { logger } = getContainer();
     recordStartTime(req);
 
-    function logOnRequestStart () {
-        logger.info(req, 'OperationStarted', {});
-    }
     function logOnRequestEnd () {
         logger.info(req, 'OperationEnded', { statusCode: get(res, 'statusCode', 0) });
     }
-    onHeaders(res, logOnRequestStart);
     onFinished(res, logOnRequestEnd);
     next();
 }

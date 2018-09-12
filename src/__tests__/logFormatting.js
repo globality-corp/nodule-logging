@@ -13,7 +13,7 @@ const uuidList = ['48df0785-dc66-408c-be85-718e5da94e10', 'b0a68c90-7f21-45e3-b6
 
 const req = {
     string: 'string',
-    uuidList,
+    uuidList: uuidList.join(','),
     stringWithNumberValue: 0,
     sub: {
         string: '123',
