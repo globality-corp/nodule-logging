@@ -1,6 +1,7 @@
 import { anyNonNil } from 'is-uuid';
 import get from 'lodash/get';
 import flatten from 'lodash/flatten';
+import isNil from 'lodash/isNil';
 
 export function getElapsedTime(req) {
     const startAt = get(req, '_startAt');
@@ -62,10 +63,11 @@ function parseObject(obj, { name, path, subPaths, type, recursive = true, ...arg
         return [{ [name]: property.split(',') }];
     }
     if (recursive && typeof property === 'object') {
+        const propertyName = isNil(name) ? '' : name;
         const nextPaths = subPaths || Object.keys(property);
         return flatten(nextPaths
             .map(subPath => parseObject(obj, {
-                name: `${name}${subPath}`,
+                name: `${propertyName}${subPath}`,
                 path: `${path}.${subPath}`,
                 recursive: false,
                 type,
