@@ -64,7 +64,7 @@ describe('logFormatting', () => {
         const stackTrace = a(req);
         expect(stackTrace[0][0]).toEqual('b');
         expect(stackTrace[0][1]).toEqual('/logFormatting.js:8:26');
-        expect(stackTrace[1][0]).toEqual('a');
+        expect(stackTrace[2][0]).toEqual('a');
     });
 
     it('should find the right parameters', async () => {

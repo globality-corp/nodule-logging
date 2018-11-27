@@ -59,10 +59,6 @@ export default {
         '/app/services/',
         '/app/resolvers/',
     ],
-    // FE Request parameters that we always should log
-    requestRules: [
-        { path: 'id', name: 'request-id', type: 'string' },
-    ],
     // Request parameters to BE services that we should auto log
     backendServiceRequestRules: [
         { path: 'url', name: 'service-url', type: 'string' },

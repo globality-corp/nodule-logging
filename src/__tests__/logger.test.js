@@ -4,8 +4,6 @@ import {
     addStream,
     createLogger,
     getLogger,
-    transportConsole,
-    transportLoggly,
 } from '../logger';
 
 describe('create a new logger and transports', () => {
@@ -13,26 +11,6 @@ describe('create a new logger and transports', () => {
         const logger = createLogger(config);
         expect(logger.level).toBe('info');
     });
-
-    it('should return a new console transport', () => {
-        const consoleTransport = transportConsole(config.level);
-        expect(consoleTransport.level).toBe('info');
-        expect(consoleTransport.colorize).toBe(false);
-    });
-
-    it('should return a new loggly transport', () => {
-        const consoleLoggly = transportLoggly({
-            enabled: true,
-            token: 'my-loggly-token',
-            level: 'info',
-            subdomain: 'subdomain',
-            tagName: 'service-name',
-            environment: 'env',
-        });
-        expect(consoleLoggly.level).toBe('info');
-        expect(consoleLoggly.client.token).toEqual('my-loggly-token');
-    });
-
 
     it('should not fail if graph is not initialized', () => {
         clearBinding('logger');
