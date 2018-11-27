@@ -1,7 +1,6 @@
 import { clearBinding } from '@globality/nodule-config';
 import config from '../__mocks__/config';
 import {
-    addStream,
     createLogger,
     getLogger,
 } from '../logger';
@@ -16,11 +15,5 @@ describe('create a new logger and transports', () => {
         clearBinding('logger');
         const logger = getLogger();
         logger.info({}, 'hello there');
-    });
-
-    it.skip('should return a writable stream for morgan to write logs to', () => {
-        const logger = createLogger(config);
-        const stream = addStream(logger, config);
-        expect(typeof stream.write).toBe('function');
     });
 });

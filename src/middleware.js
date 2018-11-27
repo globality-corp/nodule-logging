@@ -5,17 +5,6 @@ import { get, set } from 'lodash';
 import omitBy from 'lodash/omitBy';
 
 
-// where morgan connects to winston
-function addStream(logger, level) {
-    return {
-        write: (message) => {
-            const logEntry = JSON.parse(message);
-            return logger.log(level, logEntry.message, logEntry);
-        },
-    };
-}
-
-
 // exclude any health or other ignorable urls
 function skip(ignoreRouteUrls) {
     return function ignoreUrl(req) {
@@ -34,7 +23,7 @@ function omit(req, blacklist) {
 // Use morgan library to log every HTTP response
 // Also set req._startAt - that is used by the logger
 export default function middleware(req, res, next) {
-    const { level, ignoreRouteUrls, includeReqHeaders, omitReqProperties } = getConfig('logger');
+    const { ignoreRouteUrls, includeReqHeaders, omitReqProperties } = getConfig('logger');
     const { format } = getConfig('logger.morgan');
     // define custom tokens
     morgan.token('operation-hash', request => get(request, 'body.extensions.persistentQuery.sha256Hash'));
@@ -49,10 +38,10 @@ export default function middleware(req, res, next) {
         return JSON.stringify(headers);
     });
 
-    const { baseLogger } = getContainer('logger');
+    const { stream } = getContainer('logger');
     const formatFormat = json(format);
     const options = {
-        stream: addStream(baseLogger, level),
+        stream,
         skip: skip(ignoreRouteUrls),
     };
     return morgan(formatFormat, options)(req, res, next);
