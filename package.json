@@ -23,6 +23,7 @@
         "lodash": "^4.17.4",
         "morgan": "^1.7.0",
         "morgan-json": "^1.1.0",
+        "node-loggly-bulk": "^1.1.0"
     },
     "peerDependencies": {
         "@globality/nodule-config": ">= 2.3.0 < 3"

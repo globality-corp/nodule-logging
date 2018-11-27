@@ -46,20 +46,18 @@ class Logger {
     }
 
     debug(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog);
-        params.level = 'debug';
+        const params = this.createLogParameters(req, message, args, autoLog, 'debug');
         this.stream.write(params);
     }
 
     info(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog);
+        const params = this.createLogParameters(req, message, args, autoLog, 'info');
         params.level = 'info';
         this.stream.write(params);
     }
 
     warning(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog);
-        params.level = 'warning';
+        const params = this.createLogParameters(req, message, args, autoLog, 'warning');
         const stackTrace = getCleanStackTrace(req, 1);
         if (stackTrace.length) {
             params.stackTrace = stackTrace;
@@ -68,8 +66,7 @@ class Logger {
     }
 
     error(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog);
-        params.level = 'error';
+        const params = this.createLogParameters(req, message, args, autoLog, 'error');
         const stackTrace = getCleanStackTrace(req, 1);
         if (stackTrace.length) {
             params.stackTrace = stackTrace;
@@ -77,12 +74,12 @@ class Logger {
         this.stream.write(params);
     }
 
-    createLogParameters(req, message, args, autoLog) {
+    createLogParameters(req, message, args, autoLog, level) {
         const autoParameters = autoLog ? {
             elapsedTotalMs: getElapsedTime(req),
             ...extractLoggingProperties(req, this.requestRules),
         } : {};
-        return sortObj({ ...autoParameters, ...args, message });
+        return sortObj({ ...autoParameters, ...args, message, level });
     }
 }
 

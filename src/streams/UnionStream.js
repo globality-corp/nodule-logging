@@ -18,7 +18,11 @@ class UnionStream extends Writable {
     }
 
     _write(message, encoding, callback) {
-        this.streams.map(stream => stream.write(message, encoding, callback));
+        if (typeof message === 'object') {
+            this.streams.map(stream => stream.write(JSON.stringify(message), encoding, callback));
+        } else {
+            this.streams.map(stream => stream.write(message, encoding, callback));
+        }
     }
 }
 
