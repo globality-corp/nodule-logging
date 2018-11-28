@@ -25,13 +25,17 @@ class LogglyStream extends Writable {
         this._write = this._write.bind(this); // eslint-disable-line
     }
 
-    _write(message, encoding, callback) {
-        this.client.log(message, (err, { response }) => {
+    _write(message, encoding, callback) { // eslint-disable-line
+        this.client.log(JSON.parse(message));
+        /* XXX callback causing server exit??
+         *
+         * this.client.log(JSON.parse(message), (err, { response }) => {
             if (err) return callback(err);
 
             // pass down the callback function to get err or response from client
             return callback(null, response);
         });
+        */
     }
 }
 
