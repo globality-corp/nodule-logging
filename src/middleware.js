@@ -13,6 +13,16 @@ function skip(ignoreRouteUrls) {
     };
 }
 
+function asStream(logger) {
+    return {
+        // XXX add safer handling of string vs obj
+        write: (message) => {
+            const log = JSON.parse(message);
+            logger.info({}, log.message, log);
+        },
+    };
+}
+
 
 // filter out named properties from req object
 function omit(req, blacklist) {
@@ -38,10 +48,10 @@ export default function middleware(req, res, next) {
         return JSON.stringify(headers);
     });
 
-    const { stream } = getContainer('logger');
+    const logger = getContainer('logger');
     const formatFormat = json(format);
     const options = {
-        stream,
+        stream: asStream(logger),
         skip: skip(ignoreRouteUrls),
     };
     return morgan(formatFormat, options)(req, res, next);

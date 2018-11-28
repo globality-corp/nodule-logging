@@ -37,7 +37,6 @@ function sortObj(obj) {
 
 
 class Logger {
-    // XXX do something about level
     constructor(container) {
         this.config = container.config.logger;
         const { name } = container.metadata;
@@ -52,7 +51,6 @@ class Logger {
 
     info(req, message, args, autoLog = true) {
         const params = this.createLogParameters(req, message, args, autoLog, 'info');
-        params.level = 'info';
         this.stream.write(params);
     }
 
