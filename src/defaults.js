@@ -6,6 +6,13 @@ export default {
     console: {
         colorize: false,
     },
+    requestRules: [
+        {
+            name: 'request-id',
+            path: 'id',
+            type: 'string',
+        },
+    ],
     level: 'info',
     loggly: {
         enabled: false,
