@@ -2,8 +2,9 @@ import loggly from 'node-loggly-bulk';
 
 class LogglyStream {
     /**
-    * copied from: https://www.loggly.com/blog/node-js-libraries-make-sophisticated-logging-simpler/
-    * Create a new instance of MorganLogglyLogger
+    * Create a stream-like object to send logs to loggly.
+    * Buffering is handled in node-loggly-bulk so wrapping in a node stream is
+    * not necessary.
     * @param options {Object}
     * @param options.token {String} your loggly token
     * @param options.subdomain {String} your loggly SUBDOMAIN
@@ -18,8 +19,14 @@ class LogglyStream {
     }
 
     write(message) {
-        // XXX add safer handling of string vs obj
-        this.client.log(JSON.parse(message));
+        let log;
+        if (typeof message !== 'object') {
+            log = JSON.parse(message);
+        } else {
+            log = message;
+        }
+
+        this.client.log(log);
     }
 }
 
