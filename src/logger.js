@@ -35,40 +35,56 @@ function sortObj(obj) {
         .reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});
 }
 
+const LEVELS = [
+    'debug',
+    'info',
+    'warning',
+    'error',
+];
+
 
 class Logger {
     constructor(container) {
         this.config = container.config.logger;
+        this.level = this.config.level;
         const { name } = container.metadata;
         this.stream = createLoggerStream(name, this.config.level, this.config.loggly);
         this.requestRules = this.config.requestRules;
     }
 
     debug(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog, 'debug');
-        this.stream.write(params);
+        this.log(req, message, args, 'debug', autoLog);
     }
 
     info(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog, 'info');
-        this.stream.write(params);
+        this.log(req, message, args, 'info', autoLog);
     }
 
     warning(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog, 'warning');
         const stackTrace = getCleanStackTrace(req, 1);
         if (stackTrace.length) {
-            params.stackTrace = stackTrace;
+            this.log(req, message, { stackTrace, ...args }, 'warning', autoLog);
+        } else {
+            this.log(req, message, args, 'warning', autoLog);
         }
-        this.stream.write(params);
     }
 
     error(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog, 'error');
         const stackTrace = getCleanStackTrace(req, 1);
         if (stackTrace.length) {
-            params.stackTrace = stackTrace;
+            this.log(req, message, { stackTrace, ...args }, 'error', autoLog);
+        } else {
+            this.log(req, message, args, 'error', autoLog);
         }
+    }
+
+    log(req, message, args, level, autoLog = true) {
+        if (LEVELS.indexOf(level) < LEVELS.indexOf(this.level)) {
+            // don't log if level not met
+            return;
+        }
+
+        const params = this.createLogParameters(req, message, args, autoLog, level);
         this.stream.write(params);
     }
 
