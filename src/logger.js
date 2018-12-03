@@ -1,8 +1,3 @@
-import {
-    transports,
-    Logger as WinstonLogger,
-} from 'winston';
-import 'winston-loggly'; // adds winston.transports.Loggly
 import { getContainer } from '@globality/nodule-config';
 
 import {
@@ -11,61 +6,25 @@ import {
     getElapsedTime,
 } from './logFormatting';
 import loggingDefaults from './defaults';
+import {
+    UnionStream,
+    LogglyStream,
+} from './streams';
 
-
-function transportLoggly({
-    enabled,
-    token,
-    level,
-    subdomain,
-    tagName,
-    environment,
-}) {
-    if (enabled === true) {
-        return new transports.Loggly({
-            subdomain,
-            level,
-            handleExceptions: true,
-            inputToken: token,
-            json: true,
-            tags: [
-                tagName,
-                environment,
-            ],
-        });
-    }
-
-    return false;
-}
-
-function transportConsole(level) {
-    return new transports.Console({
-        level,
-        handleExceptions: true,
-        json: true,
-    });
-}
 
 // singleton to create a logging instance based on config
-function createLogger(name, level, logglyConfig) {
-    // winston logger with transports
-    const logger = new WinstonLogger({
-        exitOnError: false,
-        level,
-        transports: [
-            transportConsole(level),
-            transportLoggly({
-                enabled: logglyConfig.enabled,
-                environment: logglyConfig.environment,
-                subdomain: logglyConfig.subdomain,
-                token: logglyConfig.token,
-                tagName: name,
-                level,
-            }),
-        ].filter(transport => transport), // remove loggly if falsey
-    });
-
-    return logger;
+function createLoggerStream(name, level, logglyConfig) {
+    const streams = [process.stdout];
+    if (logglyConfig.enabled) {
+        const logglyStream = new LogglyStream({
+            token: logglyConfig.token,
+            subdomain: logglyConfig.subdomain,
+            name,
+            environment: logglyConfig.environment,
+        });
+        streams.push(logglyStream);
+    }
+    return new UnionStream({ streams });
 }
 
 // ES6 uses the order we've inserted the strings
@@ -76,49 +35,65 @@ function sortObj(obj) {
         .reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});
 }
 
+const LEVELS = [
+    'debug',
+    'info',
+    'warning',
+    'error',
+];
+
 
 class Logger {
     constructor(container) {
         this.config = container.config.logger;
+        this.level = this.config.level;
         const { name } = container.metadata;
-        this.baseLogger = createLogger(name, this.config.level, this.config.loggly);
+        this.stream = createLoggerStream(name, this.config.level, this.config.loggly);
         this.requestRules = this.config.requestRules;
     }
 
     debug(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog);
-        this.baseLogger.debug(message, params);
+        this.log(req, message, args, 'debug', autoLog);
     }
 
     info(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog);
-        this.baseLogger.info(message, params);
+        this.log(req, message, args, 'info', autoLog);
     }
 
     warning(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog);
         const stackTrace = getCleanStackTrace(req, 1);
         if (stackTrace.length) {
-            params.stackTrace = stackTrace;
+            this.log(req, message, { stackTrace, ...args }, 'warning', autoLog);
+        } else {
+            this.log(req, message, args, 'warning', autoLog);
         }
-        this.baseLogger.warn(message, params);
     }
 
     error(req, message, args, autoLog = true) {
-        const params = this.createLogParameters(req, message, args, autoLog);
         const stackTrace = getCleanStackTrace(req, 1);
         if (stackTrace.length) {
-            params.stackTrace = stackTrace;
+            this.log(req, message, { stackTrace, ...args }, 'error', autoLog);
+        } else {
+            this.log(req, message, args, 'error', autoLog);
         }
-        this.baseLogger.error(message, params);
     }
 
-    createLogParameters(req, message, args, autoLog) {
+    log(req, message, args, level, autoLog = true) {
+        if (LEVELS.indexOf(level) < LEVELS.indexOf(this.level)) {
+            // don't log if level not met
+            return;
+        }
+
+        const params = this.createLogParameters(req, message, args, autoLog, level);
+        this.stream.write(params);
+    }
+
+    createLogParameters(req, message, args, autoLog, level) {
         const autoParameters = autoLog ? {
             elapsedTotalMs: getElapsedTime(req),
             ...extractLoggingProperties(req, this.requestRules),
         } : {};
-        return sortObj({ ...autoParameters, ...args, message });
+        return sortObj({ ...autoParameters, ...args, message, level });
     }
 }
 
@@ -149,6 +124,4 @@ function getLogger() {
 module.exports = {
     getLogger,
     Logger,
-    transportConsole,
-    transportLoggly,
 };

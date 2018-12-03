@@ -1,27 +1,25 @@
 import { getConfig, getContainer } from '@globality/nodule-config';
-import get from 'lodash/get';
-import omitBy from 'lodash/omitBy';
-import set from 'lodash/set';
 import morgan from 'morgan';
 import json from 'morgan-json';
 import onFinished from 'on-finished';
-
-// where morgan connects to winston
-function addStream(logger, level) {
-    return {
-        write: (message) => {
-            const logEntry = JSON.parse(message);
-            return logger.log(level, logEntry.message, logEntry);
-        },
-    };
-}
-
+import { get, set } from 'lodash';
+import omitBy from 'lodash/omitBy';
 
 // exclude any health or other ignorable urls
 function skip(ignoreRouteUrls) {
     return function ignoreUrl(req) {
         const url = req.originalUrl || req.url;
         return ignoreRouteUrls.includes(url);
+    };
+}
+
+function asStream(logger) {
+    return {
+        // XXX add safer handling of string vs obj
+        write: (message) => {
+            const log = JSON.parse(message);
+            logger.info({}, log.message, log);
+        },
     };
 }
 
@@ -40,7 +38,7 @@ function recordStartTime(req) {
 // Use morgan library to log every HTTP response
 // Also set req._startAt - that is used by the logger
 function morganMiddleware(req, res, next) {
-    const { level, ignoreRouteUrls, includeReqHeaders, omitReqProperties } = getConfig('logger');
+    const { ignoreRouteUrls, includeReqHeaders, omitReqProperties } = getConfig('logger');
     const { format } = getConfig('logger.morgan');
     // define custom tokens
     morgan.token('operation-hash', request => get(request, 'body.extensions.persistentQuery.sha256Hash'));
@@ -55,10 +53,10 @@ function morganMiddleware(req, res, next) {
         return JSON.stringify(headers);
     });
 
-    const { baseLogger } = getContainer('logger');
+    const logger = getContainer('logger');
     const formatFormat = json(format);
     const options = {
-        stream: addStream(baseLogger, level),
+        stream: asStream(logger),
         skip: skip(ignoreRouteUrls),
     };
     return morgan(formatFormat, options)(req, res, next);
