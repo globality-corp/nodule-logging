@@ -1,6 +1,7 @@
 import { anyNonNil } from 'is-uuid';
 import get from 'lodash/get';
 import flatten from 'lodash/flatten';
+import isNil from 'lodash/isNil';
 
 export function getElapsedTime(req) {
     const startAt = get(req, '_startAt');
@@ -31,8 +32,12 @@ export function getCleanStackTrace(req, parentLevel = 0) {
         .slice(1 + parentLevel); // we dont want to return getCleanStackTrace
 }
 
+function isUuid(property) {
+    return typeof property === 'string' && anyNonNil(property);
+}
+
 function isUuidList(property) {
-    return property.every(anyNonNil);
+    return typeof property === 'string' && property.split(',').every(anyNonNil);
 }
 
 // Helper function to parseObject
@@ -41,8 +46,8 @@ function validatePropertyType(property, type, recursive) {
         (recursive && typeof property === 'object') ||
         (type === 'string' && typeof property === 'string') ||
         (type === 'number' && typeof property === 'number') ||
-        (type === 'uuid' && typeof property === 'string' && anyNonNil(property)) ||
-        (type === 'uuidList' && Array.isArray(property) && isUuidList(property))
+        (type === 'uuid' && isUuid(property)) ||
+        (type === 'uuidList' && isUuidList(property))
     );
 }
 
@@ -54,14 +59,15 @@ function parseObject(obj, { name, path, subPaths, type, recursive = true, ...arg
     if (property === null || !validatePropertyType(property, type, recursive)) {
         return [];
     }
-    if (type === 'uuidList') {
-        return [{ [name]: property }];
+    if (type === 'uuidList' && isUuidList(property)) {
+        return [{ [name]: property.split(',') }];
     }
     if (recursive && typeof property === 'object') {
+        const propertyName = isNil(name) ? '' : name;
         const nextPaths = subPaths || Object.keys(property);
         return flatten(nextPaths
             .map(subPath => parseObject(obj, {
-                name: `${name}${subPath}`,
+                name: `${propertyName}${subPath}`,
                 path: `${path}.${subPath}`,
                 recursive: false,
                 type,
