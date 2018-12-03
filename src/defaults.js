@@ -6,6 +6,13 @@ export default {
     console: {
         colorize: false,
     },
+    requestRules: [
+        {
+            name: 'request-id',
+            path: 'id',
+            type: 'string',
+        },
+    ],
     level: 'info',
     loggly: {
         enabled: false,
@@ -58,10 +65,6 @@ export default {
         '/app/modules/',
         '/app/services/',
         '/app/resolvers/',
-    ],
-    // FE Request parameters that we always should log
-    requestRules: [
-        { path: 'id', name: 'request-id', type: 'string' },
     ],
     // Request parameters to BE services that we should auto log
     backendServiceRequestRules: [
