@@ -25,7 +25,7 @@
         "morgan-json": "^1.1.0",
         "on-finished": "~2.3.0",
         "on-headers": "~1.0.1",
-        "node-loggly-bulk": "^1.1.0"
+        "node-loggly-bulk": "^2.2.4"
     },
     "peerDependencies": {
         "@globality/nodule-config": ">= 2.3.0 < 3"
