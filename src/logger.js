@@ -1,15 +1,7 @@
 import { getContainer } from '@globality/nodule-config';
-
-import {
-    extractLoggingProperties,
-    getCleanStackTrace,
-    getElapsedTime,
-} from './logFormatting';
 import loggingDefaults from './defaults';
-import {
-    UnionStream,
-    LogglyStream,
-} from './streams';
+import { extractLoggingProperties, getCleanStackTrace, getElapsedTime } from './logFormatting';
+import { LogglyStream, UnionStream } from './streams';
 
 
 // singleton to create a logging instance based on config
@@ -104,7 +96,7 @@ function getLogger() {
             name: 'testing',
         },
         config: {
-            logger: loggingDefaults,
+            logger: loggingDefaults(),
         },
     };
 

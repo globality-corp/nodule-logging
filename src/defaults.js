@@ -1,4 +1,6 @@
-export default {
+import { getMetadata } from '@globality/nodule-config';
+
+const defaults = {
     ignoreRouteUrls: [
         '/api/health',
         '/gql/health',
@@ -17,7 +19,6 @@ export default {
     loggly: {
         enabled: false,
         environment: 'dev',
-        tagName: 'leif', // xxx set tag name properly
         subdomain: 'globality',
         token: null,
     },
@@ -83,3 +84,9 @@ export default {
         { path: 'headers.etag', name: 'etag', type: 'string' },
     ],
 };
+
+export default function getDefaults() {
+    const metadata = getMetadata();
+    defaults.loggly.tagName = metadata ? metadata.name : 'default';
+    return defaults;
+}
