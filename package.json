@@ -1,6 +1,6 @@
 {
     "name": "@globality/nodule-logging",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "description": "Opinionated logging for Node projects",
     "main": "lib",
     "repository": "https://github.com/globality-corp/nodule-logging",
@@ -28,10 +28,10 @@
         "node-loggly-bulk": "^2.2.4"
     },
     "peerDependencies": {
-        "@globality/nodule-config": ">= 2.3.0 < 3"
+        "@globality/nodule-config": ">= 2.13.2 < 3"
     },
     "devDependencies": {
-        "@globality/nodule-config": "^2.3.0",
+        "@globality/nodule-config": "^2.13.2",
         "babel-cli": "^6.26.0",
         "babel-eslint": "^8.2.2",
         "babel-plugin-transform-async-to-generator": "^6.24.1",
