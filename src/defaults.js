@@ -38,7 +38,7 @@ export default {
         },
     },
     includeReqHeaders: false,
-    hideErrorDetails: false,
+    hideErrorDetails: true,
     omitReqProperties: [
         'authorization',
         'oldPassword',
