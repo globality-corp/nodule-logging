@@ -1,3 +1,10 @@
+/**
+ * Adopted from `morgan-json` from `indexzero` under MIT.
+ * https://github.com/indexzero/morgan-json/
+ * Originally adopted from `morgan.compile` from `morgan` under MIT.
+ * https://github.com/expressjs/morgan
+ */
+
 function isInvalidFormat(format) {
     return !format
       || format === ''
