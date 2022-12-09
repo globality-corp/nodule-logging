@@ -59,7 +59,7 @@ function morganMiddleware(req, res, next) {
         stream: asStream(logger),
         skip: skip(ignoreRouteUrls),
     };
-    const formatFormat = compile(format, options);
+    const formatFormat = compile(format, {});
     return morgan(formatFormat, options)(req, res, next);
 }
 

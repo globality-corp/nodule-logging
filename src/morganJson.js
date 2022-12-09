@@ -12,6 +12,17 @@ function isInvalidFormat(format) {
           && typeof format !== 'string');
 }
 
+/**
+ * Take an input string and make it null-safe and URI Encode it.
+ * We can then decode in the generated code to get back any special characters the user wanted.
+ *
+ * This is done to preserve backwards compatibility for the use-cases like `--> /:url`
+ *
+ *
+ * @param input
+ * @returns {string} A URL Encoded string
+ */
+
 function makeSafe(input) {
     if (!input || !input.trim()) {
         return '';
@@ -21,6 +32,15 @@ function makeSafe(input) {
     );
 }
 
+/**
+ * Generate the main code template.
+ * This relies on a complex regex (as did the original)
+ * This splits the input into the following segments:
+ * {prefix}{padding}{token[arguments]}{padding}{postfix}
+ *
+ * @param format
+ * @returns {{}}
+ */
 function generateBody(format) {
     let fmt = format.replace(/"/g, '\\"');
     fmt = fmt.replace(/'/g, '\\\'');
@@ -30,9 +50,13 @@ function generateBody(format) {
         /([^:]+[^ ])?( +)?:([-\w]{2,})(?:\[([^\]]+)\])?( +)?([^:]+)?/g,
     )].forEach((token) => {
         const prefix = makeSafe(token[1]);
+        // Prefix padding is the spaces between a prefix and the actual token
+        // Therefore don't call `makeSafe` as that will trim the string
         const prefixPadding = JSON.stringify(token[2]) || '';
         const tokenName = makeSafe(token[3]);
         const arg = makeSafe(token[4]);
+        // Postfix padding is the spaces between the actual token and the postfix
+        // Therefore don't call `makeSafe` as that will trim the string
         const postfixPadding = JSON.stringify(token[5]) || '';
         const postfix = makeSafe(token[6]);
 
