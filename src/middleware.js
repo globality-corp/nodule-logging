@@ -1,9 +1,9 @@
 import { getConfig, getContainer } from '@globality/nodule-config';
 import morgan from 'morgan';
-import json from 'morgan-json';
 import onFinished from 'on-finished';
 import { get, set } from 'lodash';
 import omitBy from 'lodash/omitBy';
+import compile from './morganJson';
 
 // exclude any health or other ignorable urls
 function skip(ignoreRouteUrls) {
@@ -41,7 +41,8 @@ function morganMiddleware(req, res, next) {
     const { ignoreRouteUrls, includeReqHeaders, omitReqProperties } = getConfig('logger');
     const { format } = getConfig('logger.morgan');
     // define custom tokens
-    morgan.token('operation-hash', request => get(request, 'body.extensions.persistentQuery.sha256Hash'));
+    morgan.token('operation-hash',
+        request => get(request, 'body.extensions.persistentQuery.sha256Hash'));
     morgan.token('operation-name', request => get(request, 'body.operationName'));
     morgan.token('user-id', request => get(request, 'locals.user.id'));
     morgan.token('company-id', request => get(request, 'locals.user.companyId'));
@@ -54,11 +55,11 @@ function morganMiddleware(req, res, next) {
     });
 
     const logger = getContainer('logger');
-    const formatFormat = json(format);
     const options = {
         stream: asStream(logger),
         skip: skip(ignoreRouteUrls),
     };
+    const formatFormat = compile(format, {});
     return morgan(formatFormat, options)(req, res, next);
 }
 
