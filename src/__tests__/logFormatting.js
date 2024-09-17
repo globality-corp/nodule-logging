@@ -67,7 +67,7 @@ describe('logFormatting', () => {
         // @ts-ignore
         expect(stackTrace[0][1]).toEqual('/logFormatting.js:8:26');
         // @ts-ignore
-        expect(stackTrace[2][0]).toEqual('Object.a');
+        expect(stackTrace[2][0]).toEqual('Object.<anonymous>');
     });
 
     it('should find the right parameters', async () => {
