@@ -62,8 +62,11 @@ const rulesX = [
 describe('logFormatting', () => {
     it('should find the right function`s names', async () => {
         const stackTrace = a(req);
+        // @ts-ignore
         expect(stackTrace[0][0]).toEqual('b');
+        // @ts-ignore
         expect(stackTrace[0][1]).toEqual('/logFormatting.js:8:44');
+        // @ts-ignore
         expect(stackTrace[2][0]).toEqual('Object.a');
     });
 

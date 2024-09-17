@@ -6,7 +6,7 @@ import omitBy from 'lodash/omitBy.js';
 import compile from './morganJson.js';
 
 // exclude any health or other ignorable urls
-function skip(ignoreRouteUrls) {
+export function skip(ignoreRouteUrls) {
     return function ignoreUrl(req) {
         const url = req.originalUrl || req.url;
         return ignoreRouteUrls.includes(url);
@@ -25,7 +25,7 @@ function asStream(logger) {
 
 
 // filter out named properties from req object
-function omit(req, blacklist) {
+export function omit(req, blacklist) {
     return omitBy(req, (value, key) => blacklist.includes(key));
 }
 
@@ -68,7 +68,7 @@ function thinMiddleware(req, res, next) {
     const { logger } = getContainer();
     recordStartTime(req);
 
-    function logOnRequestEnd () {
+    function logOnRequestEnd() {
         logger.info(req, 'OperationEnded', { statusCode: get(res, 'statusCode', 0) });
     }
     onFinished(res, logOnRequestEnd);
@@ -76,7 +76,7 @@ function thinMiddleware(req, res, next) {
 }
 
 
-export default function middleware(req, res, next) {
+export function middleware(req, res, next) {
     const { enableMorgan } = getConfig('logger');
     if (enableMorgan) {
         morganMiddleware(req, res, next);
@@ -93,10 +93,4 @@ export function setRequestStartAtMiddleware(req, res, next) {
     return next();
 }
 
-
-module.exports = {
-    middleware,
-    omit,
-    setRequestStartAtMiddleware,
-    skip,
-};
+export default middleware;

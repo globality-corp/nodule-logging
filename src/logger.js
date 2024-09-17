@@ -19,9 +19,11 @@ function createLoggerStream(name, level, logglyConfig) {
         const logglyStream = new LogglyStream({
             token: logglyConfig.token,
             subdomain: logglyConfig.subdomain,
+            // @ts-ignore
             name,
             environment: logglyConfig.environment,
         });
+        // @ts-ignore
         streams.push(logglyStream);
     }
     return new UnionStream({ streams });
@@ -43,7 +45,7 @@ const LEVELS = [
 ];
 
 
-class Logger {
+export class Logger {
     constructor(container) {
         this.config = container.config.logger;
         this.level = this.config.level;
@@ -97,7 +99,7 @@ class Logger {
     }
 }
 
-function getLogger() {
+export function getLogger() {
     const { metadata, config } = getContainer();
     const defaults = {
         metadata: {
@@ -119,9 +121,3 @@ function getLogger() {
     const container = getContainer();
     return new Logger(container);
 }
-
-
-module.exports = {
-    getLogger,
-    Logger,
-};
