@@ -2,7 +2,7 @@ import {
     extractLoggingProperties,
     getCleanStackTrace,
     getElapsedTime,
-} from '../logFormatting';
+} from '../logFormatting.js';
 
 
 function b(req) { return getCleanStackTrace(req); }

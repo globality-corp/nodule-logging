@@ -1,8 +1,8 @@
-import config from '../__mocks__/config';
+import config from '../__mocks__/config.js';
 import {
     skip,
     omit,
-} from '../middleware';
+} from '../middleware.js';
 
 
 describe('create a new logger middleware', () => {

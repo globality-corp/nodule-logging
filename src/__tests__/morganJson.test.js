@@ -5,7 +5,7 @@
  * https://github.com/expressjs/morgan
  */
 
-import compile from '../morganJson';
+import compile from '../morganJson.js';
 
 //
 // A simple mock "morgan" object which returns deterministic

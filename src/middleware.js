@@ -2,8 +2,8 @@ import { getConfig, getContainer } from '@globality/nodule-config';
 import morgan from 'morgan';
 import onFinished from 'on-finished';
 import { get, set } from 'lodash';
-import omitBy from 'lodash/omitBy';
-import compile from './morganJson';
+import omitBy from 'lodash/omitBy.js';
+import compile from './morganJson.js';
 
 // exclude any health or other ignorable urls
 function skip(ignoreRouteUrls) {

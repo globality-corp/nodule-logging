@@ -1,7 +1,7 @@
 import { anyNonNil } from 'is-uuid';
-import get from 'lodash/get';
-import flatten from 'lodash/flatten';
-import isNil from 'lodash/isNil';
+import get from 'lodash/get.js';
+import flatten from 'lodash/flatten.js';
+import isNil from 'lodash/isNil.js';
 
 export function getElapsedTime(req) {
     const startAt = get(req, '_startAt');

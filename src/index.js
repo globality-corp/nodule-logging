@@ -1,13 +1,13 @@
 import { bind, setDefaults } from '@globality/nodule-config';
 
-import loggingDefaults from './defaults';
-import { getLogger, Logger } from './logger';
-import { middleware, setRequestStartAtMiddleware } from './middleware';
+import loggingDefaults from './defaults.js';
+import { getLogger, Logger } from './logger.js';
+import { middleware, setRequestStartAtMiddleware } from './middleware.js';
 import {
     extractLoggingProperties,
     getCleanStackTrace,
     getElapsedTime,
-} from './logFormatting';
+} from './logFormatting.js';
 
 
 bind('logger', () => getLogger());

@@ -1,7 +1,7 @@
 import { clearBinding } from '@globality/nodule-config';
 import {
     getLogger,
-} from '../logger';
+} from '../logger.js';
 
 describe('create a new logger and transports', () => {
     it('should not fail if graph is not initialized', () => {

@@ -1,5 +1,5 @@
-import LogglyStream from './LogglyStream';
-import UnionStream from './UnionStream';
+import LogglyStream from './LogglyStream.js';
+import UnionStream from './UnionStream.js';
 
 export {
     LogglyStream,

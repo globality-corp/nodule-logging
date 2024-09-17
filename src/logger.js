@@ -4,12 +4,12 @@ import {
     extractLoggingProperties,
     getCleanStackTrace,
     getElapsedTime,
-} from './logFormatting';
-import loggingDefaults from './defaults';
+} from './logFormatting.js';
+import loggingDefaults from './defaults.js';
 import {
     UnionStream,
     LogglyStream,
-} from './streams';
+} from './streams/index.js';
 
 
 // singleton to create a logging instance based on config
