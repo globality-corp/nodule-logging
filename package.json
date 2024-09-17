@@ -2,7 +2,7 @@
     "name": "@globality/nodule-logging",
     "version": "2.0.0",
     "description": "Opinionated logging for Node projects",
-    "main": "lib",
+    "main": "lib/index.js",
     "repository": "https://github.com/globality-corp/nodule-logging",
     "jest": {
         "testURL": "http://localhost/"
