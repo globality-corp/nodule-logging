@@ -3,14 +3,16 @@
     "version": "2.0.0",
     "description": "Opinionated logging for Node projects",
     "main": "lib/index.js",
-    "files": ["lib"],
+    "files": [
+        "lib"
+    ],
     "type": "module",
     "repository": "https://github.com/globality-corp/nodule-logging",
     "jest": {
         "testURL": "http://localhost/"
     },
     "scripts": {
-        "build": "babel src --out-dir lib --ignore '**/*.test.js','**/__mocks__/*'",
+        "build": "tsc -p tsconfig.build.json",
         "lint": "eslint src --cache",
         "test": "jest src",
         "verify": "yarn lint && yarn test"

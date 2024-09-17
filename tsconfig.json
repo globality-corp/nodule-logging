@@ -1,0 +1,7 @@
+{
+  "extends": "./node_modules/@total-typescript/tsconfig/tsc/no-dom/library.json",
+  "compilerOptions": {
+    "outDir": "lib"
+  },
+  "include": ["src"]
+}
