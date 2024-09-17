@@ -29,14 +29,14 @@
         "on-headers": "~1.0.1"
     },
     "peerDependencies": {
-        "@globality/nodule-config": ">= 2.13.2 < 3"
+        "@globality/nodule-config": "3.0.0-dev.73"
     },
     "devDependencies": {
         "@babel/cli": "^7.18.6",
         "@babel/core": "^7.18.6",
         "@babel/node": "^7.18.6",
         "@babel/preset-env": "^7.7.1",
-        "@globality/nodule-config": "^2.13.2",
+        "@globality/nodule-config": "3.0.0-dev.73",
         "eslint": "^4.18.2",
         "eslint-config-airbnb-base": "^12.1.0",
         "eslint-plugin-import": "^2.9.0",
