@@ -4,6 +4,7 @@
     "description": "Opinionated logging for Node projects",
     "main": "lib/index.js",
     "files": ["lib"],
+    "type": "module",
     "repository": "https://github.com/globality-corp/nodule-logging",
     "jest": {
         "testURL": "http://localhost/"
