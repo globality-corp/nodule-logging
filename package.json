@@ -34,10 +34,7 @@
         "@globality/nodule-config": "3.0.0-dev.73"
     },
     "devDependencies": {
-        "@babel/cli": "^7.18.6",
         "@babel/core": "^7.18.6",
-        "@babel/node": "^7.18.6",
-        "@babel/preset-env": "^7.7.1",
         "@globality/nodule-config": "3.0.0-dev.73",
         "@total-typescript/tsconfig": "^1.0.4",
         "eslint": "^4.18.2",
