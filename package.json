@@ -33,6 +33,7 @@
     "devDependencies": {
         "@babel/core": "^7.18.6",
         "@globality/nodule-config": "3.0.0-dev.73",
+        "@jest/globals": "^29.7.0",
         "@total-typescript/tsconfig": "^1.0.4",
         "@types/jest": "^29.5.13",
         "eslint": "^4.18.2",
