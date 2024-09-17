@@ -2,7 +2,7 @@ import {
     extractLoggingProperties,
     getCleanStackTrace,
     getElapsedTime,
-} from '../logFormatting';
+} from '../logFormatting.js';
 
 
 function b(req) { return getCleanStackTrace(req); }
@@ -62,9 +62,12 @@ const rulesX = [
 describe('logFormatting', () => {
     it('should find the right function`s names', async () => {
         const stackTrace = a(req);
+        // @ts-ignore
         expect(stackTrace[0][0]).toEqual('b');
-        expect(stackTrace[0][1]).toEqual('/logFormatting.js:8:44');
-        expect(stackTrace[2][0]).toEqual('Object.a');
+        // @ts-ignore
+        expect(stackTrace[0][1]).toEqual('/logFormatting.js:8:26');
+        // @ts-ignore
+        expect(stackTrace[2][0]).toEqual('Object.<anonymous>');
     });
 
     it('should find the right parameters', async () => {

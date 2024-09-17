@@ -1,7 +1,7 @@
 import { anyNonNil } from 'is-uuid';
-import get from 'lodash/get';
-import flatten from 'lodash/flatten';
-import isNil from 'lodash/isNil';
+import get from 'lodash-es/get.js';
+import flatten from 'lodash-es/flatten.js';
+import isNil from 'lodash-es/isNil.js';
 
 export function getElapsedTime(req) {
     const startAt = get(req, '_startAt');
@@ -23,6 +23,7 @@ export function getCleanStackTrace(req, parentLevel = 0) {
     Error.stackTraceLimit = oldLimit;
 
     const addresses = get(req, 'app.config.logging.stackTracePathFilter', []).join('|');
+    // @ts-ignore
     return stackTrace
         .split('\n')
         .slice(1) // the 1st line is a header
@@ -66,6 +67,7 @@ function parseObject(obj, { name, path, subPaths, type, recursive = true, ...arg
         const propertyName = isNil(name) ? '' : name;
         const nextPaths = subPaths || Object.keys(property);
         return flatten(nextPaths
+            // @ts-ignore
             .map(subPath => parseObject(obj, {
                 name: `${propertyName}${subPath}`,
                 path: `${path}.${subPath}`,

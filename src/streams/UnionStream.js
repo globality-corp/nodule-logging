@@ -1,9 +1,9 @@
-class UnionStream {
+export default class UnionStream {
     /**
     * Take a list of streams or stream-like objects (objects exposing a write-function)
     * and treat them as one.
     * @param options {Object}
-    * @param options.streams {List[Stream]} list of streams to union
+    * @param options.streams {any[]} list of streams to union
     */
     constructor(options) {
         this.streams = options.streams;
@@ -21,5 +21,3 @@ class UnionStream {
         });
     }
 }
-
-module.exports = UnionStream;

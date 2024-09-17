@@ -1,6 +1,6 @@
 import loggly from 'node-loggly-bulk';
 
-class LogglyStream {
+export default class LogglyStream {
     /**
     * Create a stream-like object to send logs to loggly.
     * Buffering is handled in node-loggly-bulk so wrapping in a node stream is
@@ -13,6 +13,7 @@ class LogglyStream {
         this.client = loggly.createClient({
             token: options.token,
             subdomain: options.subdomain,
+            // @ts-ignore
             tags: [options.environment, options.name],
             json: true,
         });
@@ -29,5 +30,3 @@ class LogglyStream {
         this.client.log(log);
     }
 }
-
-module.exports = LogglyStream;

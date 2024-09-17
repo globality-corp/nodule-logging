@@ -1,7 +1,9 @@
 import { clearBinding } from '@globality/nodule-config';
+import { jest } from '@jest/globals';
 import {
     getLogger,
-} from '../logger';
+} from '../logger.js';
+
 
 describe('create a new logger and transports', () => {
     it('should not fail if graph is not initialized', () => {
@@ -16,12 +18,15 @@ describe('create a new logger and transports', () => {
         const logger = getLogger();
         logger.stream.write = jest.fn();
         logger.info({}, 'hello there');
+        // @ts-ignore
         expect(logger.stream.write.mock.calls.length).toBe(1);
         // debug logs are not created
         logger.debug({}, 'hello there');
+        // @ts-ignore
         expect(logger.stream.write.mock.calls.length).toBe(1);
         // but warning logs
         logger.warning({}, 'hello there');
+        // @ts-ignore
         expect(logger.stream.write.mock.calls.length).toBe(2);
     });
 });

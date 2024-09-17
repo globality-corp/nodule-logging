@@ -7,9 +7,9 @@
 
 function isInvalidFormat(format) {
     return !format
-      || format === ''
-      || (typeof format !== 'object'
-          && typeof format !== 'string');
+        || format === ''
+        || (typeof format !== 'object'
+            && typeof format !== 'string');
 }
 
 /**
@@ -152,7 +152,7 @@ function compileObject(format, opts) {
  * Adopted from `morgan.compile` from `morgan` under MIT.
  *
  * @param {string|Object} format
- * @param {Object} opts Options for how things are returned.
+ * @param {Object=} opts Options for how things are returned.
  *   - 'stringify': (default: true) If false returns an object literal
  * @return {function}
  * @public
