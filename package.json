@@ -8,13 +8,10 @@
     ],
     "type": "module",
     "repository": "https://github.com/globality-corp/nodule-logging",
-    "jest": {
-        "testURL": "http://localhost/"
-    },
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
         "lint": "eslint src --cache",
-        "test": "jest src",
+        "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest src",
         "verify": "yarn lint && yarn test"
     },
     "author": {

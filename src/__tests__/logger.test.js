@@ -14,7 +14,7 @@ describe('create a new logger and transports', () => {
     it('should respect log level', () => {
         clearBinding('logger');
         const logger = getLogger();
-        logger.stream.write = jest.fn();
+        logger.stream.write = import.meta.jest.fn();
         logger.info({}, 'hello there');
         // @ts-ignore
         expect(logger.stream.write.mock.calls.length).toBe(1);
